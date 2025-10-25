@@ -5,3 +5,9 @@ verify_jwt = true
 
 [functions.fetch-environmental-data]
 verify_jwt = false
+
+[functions.learn-habits-ml]
+verify_jwt = true
+
+[functions.send-environmental-alerts]
+verify_jwt = false

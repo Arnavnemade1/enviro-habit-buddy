@@ -343,6 +343,54 @@ export type Database = {
         }
         Relationships: []
       }
+      environmental_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          environmental_data: Json | null
+          id: string
+          is_sent: boolean | null
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          message: string
+          sent_at: string | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          environmental_data?: Json | null
+          id?: string
+          is_sent?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          message: string
+          sent_at?: string | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          environmental_data?: Json | null
+          id?: string
+          is_sent?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          message?: string
+          sent_at?: string | null
+          severity?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       environmental_data: {
         Row: {
           created_at: string
@@ -488,6 +536,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      location_history: {
+        Row: {
+          accuracy: number | null
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          latitude: number
+          location_name: string | null
+          longitude: number
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          accuracy?: number | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          latitude: number
+          location_name?: string | null
+          longitude: number
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          accuracy?: number | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          latitude?: number
+          location_name?: string | null
+          longitude?: number
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       messages: {
         Row: {
