@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_insights: {
+        Row: {
+          created_at: string
+          environmental_context: Json | null
+          expires_at: string | null
+          id: string
+          insight_type: string
+          is_dismissed: boolean | null
+          is_read: boolean | null
+          message: string
+          priority: string | null
+          related_habit_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          environmental_context?: Json | null
+          expires_at?: string | null
+          id?: string
+          insight_type: string
+          is_dismissed?: boolean | null
+          is_read?: boolean | null
+          message: string
+          priority?: string | null
+          related_habit_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          environmental_context?: Json | null
+          expires_at?: string | null
+          id?: string
+          insight_type?: string
+          is_dismissed?: boolean | null
+          is_read?: boolean | null
+          message?: string
+          priority?: string | null
+          related_habit_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       air_quality_alerts: {
         Row: {
           alert_type: string
@@ -295,6 +340,39 @@ export type Database = {
           preprocessing_config?: Json | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      environmental_data: {
+        Row: {
+          created_at: string
+          data: Json
+          data_type: string
+          id: string
+          latitude: number
+          location_name: string
+          longitude: number
+          recorded_at: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          data_type: string
+          id?: string
+          latitude: number
+          location_name: string
+          longitude: number
+          recorded_at: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          data_type?: string
+          id?: string
+          latitude?: number
+          location_name?: string
+          longitude?: number
+          recorded_at?: string
         }
         Relationships: []
       }
@@ -817,6 +895,96 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_habits: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          days_of_week: number[] | null
+          duration_minutes: number | null
+          frequency: string | null
+          habit_name: string
+          habit_type: string
+          id: string
+          latitude: number | null
+          learned_by_ai: boolean | null
+          location_name: string | null
+          longitude: number | null
+          time_of_day: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          days_of_week?: number[] | null
+          duration_minutes?: number | null
+          frequency?: string | null
+          habit_name: string
+          habit_type: string
+          id?: string
+          latitude?: number | null
+          learned_by_ai?: boolean | null
+          location_name?: string | null
+          longitude?: number | null
+          time_of_day?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          days_of_week?: number[] | null
+          duration_minutes?: number | null
+          frequency?: string | null
+          habit_name?: string
+          habit_type?: string
+          id?: string
+          latitude?: number | null
+          learned_by_ai?: boolean | null
+          location_name?: string | null
+          longitude?: number | null
+          time_of_day?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          data: Json | null
+          id: string
+          is_read: boolean | null
+          notification_type: string
+          sent_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          data?: Json | null
+          id?: string
+          is_read?: boolean | null
+          notification_type: string
+          sent_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          data?: Json | null
+          id?: string
+          is_read?: boolean | null
+          notification_type?: string
+          sent_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
