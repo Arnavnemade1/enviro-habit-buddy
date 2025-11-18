@@ -38,9 +38,9 @@ Deno.serve(async (req) => {
 
     // Fetch air quality data from OpenAQ (no key required)
     // Note: OpenAQ doesn't support exact coordinates, we'll fetch nearest location
-    const airQualityUrl = `https://api.openaq.org/v2/latest?coordinates=${latitude},${longitude}&radius=25000&limit=1`;
-    
-    console.log('Fetching air quality data...');
+    console.log('Fetching air quality data from WAQI...');
+    // Using World Air Quality Index (WAQI) - demo token for basic access
+    const airQualityUrl = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=demo`;
     const airQualityResponse = await fetch(airQualityUrl);
     const airQualityData = await airQualityResponse.json();
     
@@ -59,28 +59,17 @@ Deno.serve(async (req) => {
       hourlyForecast: weatherData.hourly
     };
 
-    // Parse air quality data
+    // Parse air quality data from WAQI
     let airQualityParsed = null;
-    if (airQualityData.results && airQualityData.results.length > 0) {
-      const result = airQualityData.results[0];
-      const measurements = result.measurements || [];
+    if (airQualityData.status === 'ok' && airQualityData.data) {
+      const data = airQualityData.data;
       
       airQualityParsed = {
-        locationName: result.location,
-        city: result.city,
-        country: result.country,
-        coordinates: result.coordinates,
-        measurements: measurements.reduce((acc: any, m: any) => {
-          acc[m.parameter] = {
-            value: m.value,
-            unit: m.unit,
-            lastUpdated: m.lastUpdated
-          };
-          return acc;
-        }, {}),
-        pm25: measurements.find((m: any) => m.parameter === 'pm25')?.value,
-        pm10: measurements.find((m: any) => m.parameter === 'pm10')?.value,
-        aqi: calculateAQI(measurements),
+        aqi: data.aqi || null,
+        pm25: data.iaqi?.pm25?.v || null,
+        pm10: data.iaqi?.pm10?.v || null,
+        locationName: data.city?.name || locationName,
+        measurements: data.iaqi || {}
       };
     }
 

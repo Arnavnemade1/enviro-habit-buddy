@@ -11,3 +11,9 @@ verify_jwt = true
 
 [functions.send-environmental-alerts]
 verify_jwt = false
+
+[functions.generate-enviroai-summary]
+verify_jwt = false
+
+[functions.auto-track-habits]
+verify_jwt = true

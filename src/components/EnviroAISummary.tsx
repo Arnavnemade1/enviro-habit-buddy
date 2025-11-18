@@ -9,12 +9,15 @@ interface EnviroAISummaryProps {
 export const EnviroAISummary = ({ summary, loading }: EnviroAISummaryProps) => {
   if (loading) {
     return (
-      <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <div className="flex items-center gap-3">
-          <Loader2 className="w-5 h-5 text-primary animate-spin" />
+      <Card className="p-6 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border-primary/20 shadow-lg">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <div className="absolute inset-0 w-8 h-8 bg-primary/20 rounded-full animate-ping" />
+          </div>
           <div>
-            <p className="font-semibold text-foreground">EnviroAI is analyzing...</p>
-            <p className="text-sm text-muted-foreground">Generating your personalized summary</p>
+            <p className="font-bold text-lg text-foreground">EnviroAI is analyzing...</p>
+            <p className="text-sm text-muted-foreground">Powered by LLaMA 3.3</p>
           </div>
         </div>
       </Card>
@@ -24,21 +27,25 @@ export const EnviroAISummary = ({ summary, loading }: EnviroAISummaryProps) => {
   if (!summary) return null;
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
-          <Sparkles className="w-5 h-5 text-white" />
+    <Card className="p-6 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border-primary/20 shadow-lg">
+      <div className="flex items-start gap-4">
+        <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center flex-shrink-0 shadow-md">
+          <Sparkles className="w-6 h-6 text-white animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-xl animate-pulse" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+          <h3 className="font-bold text-lg text-foreground mb-3 flex items-center gap-2">
             EnviroAI Summary
           </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+          <p className="text-base text-foreground/90 leading-relaxed whitespace-pre-line font-medium">
             {summary}
           </p>
-          <p className="text-xs text-muted-foreground/70 mt-3 italic">
-            Powered by LLaMA 4 Maverick
-          </p>
+          <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border/30">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <p className="text-xs text-muted-foreground font-medium">
+              Powered by LLaMA 3.3
+            </p>
+          </div>
         </div>
       </div>
     </Card>
