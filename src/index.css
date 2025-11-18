@@ -58,6 +58,10 @@ All colors MUST be HSL.
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Glass effect */
+    --glass-bg: hsl(140 20% 98% / 0.8);
+    --glass-border: hsl(140 20% 92% / 0.5);
 
     --radius: 1rem;
 
@@ -117,6 +121,9 @@ All colors MUST be HSL.
     --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.3);
     --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.4);
     --shadow-strong: 0 8px 24px hsl(0 0% 0% / 0.5);
+    
+    --glass-bg: hsl(140 50% 8% / 0.8);
+    --glass-border: hsl(140 40% 15% / 0.5);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -135,5 +142,28 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Smooth animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  /* Glass effect utility */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
   }
 }

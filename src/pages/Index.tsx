@@ -30,7 +30,7 @@ const Index = () => {
   const [aiSummary, setAiSummary] = useState<string>("");
   
   const [currentLocation, setCurrentLocation] = useState({
-    name: "San Francisco",
+    name: "Detecting location...",
     latitude: 37.7749,
     longitude: -122.4194
   });
@@ -184,21 +184,33 @@ const Index = () => {
   };
 
   const handleGenerateSummary = async () => {
+    if (!weather) {
+      toast({ title: "Error", description: "No environmental data available", variant: "destructive" });
+      return;
+    }
+
     setGeneratingSummary(true);
     setAiSummary("");
     
-    const summaryText = `🌍 **Environmental Overview for ${currentLocation.name}**
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-enviroai-summary', {
+        body: {
+          weatherData: weather,
+          airQuality: airQuality,
+          habits: habits
+        }
+      });
 
-Current conditions: ${weather ? `${Math.round(weather.temperature)}°C, ${weather.description}` : "Loading..."} with air quality at ${airQuality ? `AQI ${airQuality.aqi}` : "checking..."}.
+      if (error) throw error;
 
-${habits.length > 0 ? `EnviroAI is tracking ${habits.length} of your habits and has generated ${insights.length} personalized insights for you today.` : "Start adding your habits to receive personalized environmental insights."}
-
-${airQuality && airQuality.aqi < 50 ? "Great news! Air quality is excellent for outdoor activities." : airQuality && airQuality.aqi > 100 ? "⚠️ Consider limiting outdoor exposure due to elevated pollution levels." : "Air quality is moderate - typical outdoor activities are fine."}
-
-Stay informed and make environmentally-conscious decisions with EnviroAI! 🌱`;
-
-    setAiSummary(summaryText);
-    setGeneratingSummary(false);
+      setAiSummary(data.summary);
+      toast({ title: "Summary Generated!", description: "EnviroAI has analyzed your environment" });
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      toast({ title: "Error", description: "Failed to generate AI summary", variant: "destructive" });
+    } finally {
+      setGeneratingSummary(false);
+    }
   };
 
   const handleAddHabit = async (habitData: any) => {
@@ -224,12 +236,56 @@ Stay informed and make environmentally-conscious decisions with EnviroAI! 🌱`;
   };
 
   const handleLocationUpdate = async (location: { latitude: number; longitude: number; locationName: string }) => {
+    console.log('Location updated:', location);
     setCurrentLocation({
       name: location.locationName,
       latitude: location.latitude,
       longitude: location.longitude
     });
-    await fetchEnvironmentalData();
+    
+    // Fetch new environmental data
+    try {
+      const { data: envData, error: envError } = await supabase.functions.invoke('fetch-environmental-data', {
+        body: {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          locationName: location.locationName
+        }
+      });
+
+      if (envError) throw envError;
+      setWeather(envData.weather);
+      setAirQuality(envData.airQuality);
+
+      // Auto-track habit patterns if user is authenticated
+      if (user && envData.weather && envData.airQuality) {
+        try {
+          await supabase.functions.invoke('auto-track-habits', {
+            body: {
+              locationData: {
+                latitude: location.latitude,
+                longitude: location.longitude,
+                timestamp: new Date().toISOString(),
+                location_name: location.locationName
+              },
+              environmentalData: {
+                temperature: envData.weather.temperature,
+                aqi: envData.airQuality.aqi
+              }
+            }
+          });
+        } catch (error) {
+          console.error('Error auto-tracking habits:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating location:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update environmental data",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSignOut = async () => {
