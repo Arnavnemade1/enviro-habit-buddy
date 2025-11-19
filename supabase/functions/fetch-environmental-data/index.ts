@@ -36,11 +36,9 @@ Deno.serve(async (req) => {
     
     console.log('Weather data fetched:', JSON.stringify(weatherData).substring(0, 200));
 
-    // Fetch air quality data from OpenAQ (no key required)
-    // Note: OpenAQ doesn't support exact coordinates, we'll fetch nearest location
-    console.log('Fetching air quality data from WAQI...');
-    // Using World Air Quality Index (WAQI) - demo token for basic access
-    const airQualityUrl = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=demo`;
+    // Fetch air quality data from Open-Meteo Air Quality API (no key required)
+    console.log('Fetching air quality data from Open-Meteo...');
+    const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&hourly=pm2_5,pm10&timezone=auto`;
     const airQualityResponse = await fetch(airQualityUrl);
     const airQualityData = await airQualityResponse.json();
     
@@ -59,17 +57,24 @@ Deno.serve(async (req) => {
       hourlyForecast: weatherData.hourly
     };
 
-    // Parse air quality data from WAQI
+    // Parse air quality data from Open-Meteo
     let airQualityParsed = null;
-    if (airQualityData.status === 'ok' && airQualityData.data) {
-      const data = airQualityData.data;
-      
+    const hourly = airQualityData?.hourly;
+    if (hourly?.pm2_5 && Array.isArray(hourly.pm2_5) && hourly.pm2_5.length > 0) {
+      const lastIndex = hourly.pm2_5.length - 1;
+      const pm25 = hourly.pm2_5[lastIndex];
+      const pm10 = hourly.pm10?.[lastIndex] ?? null;
+
+      const aqi = calculateAQI([
+        { parameter: 'pm25', value: pm25 }
+      ]);
+
       airQualityParsed = {
-        aqi: data.aqi || null,
-        pm25: data.iaqi?.pm25?.v || null,
-        pm10: data.iaqi?.pm10?.v || null,
-        locationName: data.city?.name || locationName,
-        measurements: data.iaqi || {}
+        aqi,
+        pm25,
+        pm10,
+        locationName,
+        measurements: { pm25, pm10 }
       };
     }
 

@@ -88,8 +88,18 @@ Return ONLY the habit name, nothing else.`;
         }),
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('OpenRouter habit name error:', response.status, errorText);
+        throw new Error(`OpenRouter API error: ${response.status}`);
+      }
+
       const data = await response.json();
-      const habitName = data.choices[0].message.content.trim();
+      const habitContent = data?.choices?.[0]?.message?.content;
+
+      const habitName = typeof habitContent === 'string' && habitContent.trim().length > 0
+        ? habitContent.trim()
+        : `Routine at ${locationName}`;
 
       habitsToStore.push({
         user_id: user.id,
